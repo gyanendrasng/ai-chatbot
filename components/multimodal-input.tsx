@@ -30,6 +30,8 @@ import type { VisibilityType } from './visibility-selector';
 import type { Attachment, ChatMessage } from '@/lib/types';
 import { ModelSelector } from './model-selector';
 import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
+
 
 function PureMultimodalInput({
   chatId,
@@ -66,6 +68,7 @@ function PureMultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const router = useRouter();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -117,6 +120,11 @@ function PureMultimodalInput({
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
+    console.log(session)
+    if(session.user.type==='guest'){
+      router.push('/login');
+      return;
+    }
     window.history.replaceState({}, '', `/chat/${chatId}`);
 
     sendMessage({
